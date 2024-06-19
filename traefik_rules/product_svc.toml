@@ -1,0 +1,21 @@
+[http]
+    [http.routers]
+        [http.routers.product-svc]
+            entryPoints = ["http"]
+            rule = "Host(`localhost`) && PathPrefix(`/v1/products`)"
+            service = "product-svc"
+            middlewares = ["midd-product-svc", "api-key"]
+
+    [http.services]
+        [http.services.product-svc]
+            [http.services.product-svc.loadBalancer]
+                [[http.services.product-svc.loadBalancer.servers]]
+                    url = "http://product-svc:3002"
+
+    [http.middlewares]
+        [http.middlewares.api-key.headers]
+            [http.middlewares.api-key.headers.customRequestHeaders]
+                X-Api-Key = "YAMdLbpm4vss9a3sAiSxXW2ttFxkhV7k"
+        [http.middlewares.midd-product-svc]
+            [http.middlewares.midd-product-svc.stripPrefix]
+                prefixes = ["/v1"]

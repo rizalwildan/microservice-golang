@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  title: Merchant Service API
+  description: API design for merchant service
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3001
+    description: Endpoint ini digunakan untuk local development
+  - url: http://localhost:8081/v1/products
+    description: Endpoint ini digunakan untuk external client yang ingin berkomunikasi dengan merchant service
+
+paths:
+  /merchants:
+    get:
+      summary: Fetch list merchants
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/ListMerchant"
+
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/ServerError"
+
+    post:
+      summary: Create merchant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Pet Shop
+                description:
+                  type: string
+                  example: sort desc
+                city:
+                  type: string
+                  example: Yogyakarta
+                user_id:
+                  type: integer
+                  example: 1
+              required:
+                - name
+                - city
+                - user_id
+
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Created"
+
+        '422':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/ValidationFailed"
+
+        '409':
+          description: Merchant already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Merchant already exists
+
+
+  /merchants/{id}:
+    get:
+      summary: Get detail merchant
+      parameters:
+        - name: id
+          in: path
+          description: Merchant ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: oke
+                  data:
+                    type: object
+                    $ref: "#components/schemas/Merchant"
+
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/NotFound"
+
+  /merchants/{merchantId}/products:
+    get:
+      summary: "Fetch product by merchant id"
+      parameters:
+        - name: merchantId
+          in: path
+          description: Merchant ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/MerchantProduct"
+
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/NotFound"
+
+
+
+components:
+  schemas:
+    Owner:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: bob
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Whiskas 500grm
+        description:
+          type: string
+          example: sort description
+        quantity:
+          type: integer
+          example: 10
+        merchant_id:
+          type: integer
+          example: 1
+
+    Merchant:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Meow Shop
+        description:
+          type: string
+          example: sort description
+        city:
+          type: string
+          example: Yogyakarta
+        user_id:
+          type: integer
+          example: 1
+        owner:
+          type: object
+          $ref: "#components/schemas/Owner"
+
+    MerchantProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Meow Shop
+        description:
+          type: string
+          example: sort description
+        city:
+          type: string
+          example: Yogyakarta
+        user_id:
+          type: integer
+          example: 1
+        owner:
+          type: object
+          $ref: "#components/schemas/Owner"
+        products:
+          type: array
+          items:
+            $ref: "#components/schemas/Product"
+
+    Created:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: created
+
+    NotFound:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: merchant not found
+
+    ServerError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: something happened
+
+    ValidationFailed:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: validation failed
+        errors:
+          type: string
+          example: name must be required
+
+    ListMerchant:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: oke
+        data:
+          type: array
+          items:
+            type: object
+            $ref: "#components/schemas/Merchant"

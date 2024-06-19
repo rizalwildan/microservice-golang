@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: User Service API
+  description: API design for user service
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Endpoint ini digunakan untuk local development
+  - url: http://localhost:8081/v1/users
+    description: Endpoint ini digunakan untuk external client yang ingin berkomunikasi dengan user service
+
+paths:
+  /auth/signup:
+    post:
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Swagger Joe
+                email:
+                  type: string
+                  description: Email harus unique
+                  example: swagger@mail.com
+                password:
+                  description: Password wajib mengandung 1 Angka, 1 Huruf Besar, 1 Huruf Kecil, 1 Special Karakter
+                  type: string
+                  example: Sw4gg3r#
+              required:
+                - name
+                - email
+                - password
+      responses:
+        '201':
+          description: Registrasi user berhasil dilakukan
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Created"
+        '422':
+          description: Error validation
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Validation"
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/ServerError"
+
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "swagger@mail.com"
+                password:
+                  type: string
+                  example: "Sw4gg3r#"
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Loggin berhasil
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/AuthLogin"
+        '422':
+          description: Validation Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Validation"
+        '401':
+          description: Authorization information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/InvalidAuth"
+
+  /auth/me:
+    get:
+      summary: Mendapatkan session profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/ApiResponse"
+        '401':
+          description: Authorization information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Unauthorized"
+        '500':
+          description: Unexpected error.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/ServerError"
+
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Swagger
+        email:
+          type: string
+          example: swagger@mail.com
+    AuthLogin:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            access_token:
+              type: string
+          example: { "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiZXhwIjoxNzE4MzczOTI5fQ.ZpsQMHSyHH-pIpWnDlCdEb798PjyxvzG7dQ5bNsrieo"}
+    Created:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: created
+    Validation:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: validation failed
+        errors:
+          type: string
+          example: Email must be required
+    ServerError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Something happen
+    InvalidAuth:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: invalid email or password
+    NotFoundException:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: data not found
+    Unauthorized:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Unauthorized
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: oke
+        data:
+          type: object
+          $ref: "#components/schemas/User"

@@ -1,0 +1,42 @@
+services:
+  api-gateway:
+    image: traefik:v3.0
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.file.directory=/rules
+    ports:
+      - "8081:80"
+      - "8082:8080"
+    volumes:
+      - ./traefik_rules:/rules
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  user-svc:
+    build:
+      context: ./user_svc
+    environment:
+      PORT: 3000
+      TOKEN_KEY: "tiXZD4xh^~eKCptbMYHd4ay^TXE#5Pf^"
+    volumes:
+      - ./user_svc/docs:/root/docs
+
+  merchant-svc:
+    build:
+      context: ./merchant_svc
+    environment:
+      PORT: 3001
+      PRODUCT_SVC_URL: "http://product-svc:3002"
+      USER_SVC_URL: "http://user-svc:3000"
+      PRODUCT_SVC_KEY: "YAMdLbpm4vss9a3sAiSxXW2ttFxkhV7k"
+    volumes:
+      - ./merchant_svc/docs:/root/docs
+
+  product-svc:
+    build:
+      context: ./product_svc
+    environment:
+      PORT: 3002
+      MERCHANT_SVC_URL: "http://merchant-svc:3001"
+    volumes:
+      - ./product_svc/docs:/root/docs

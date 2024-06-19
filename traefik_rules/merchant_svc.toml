@@ -1,0 +1,21 @@
+[http]
+    [http.routers]
+        [http.routers.merchant-svc]
+            entryPoints = ["http"]
+            rule = "Host(`localhost`) && PathPrefix(`/v1/merchants`)"
+            service = "merchant-svc"
+            middlewares = ["midd-merchant-svc", "api-key"]
+
+    [http.services]
+        [http.services.merchant-svc]
+            [http.services.merchant-svc.loadBalancer]
+                [[http.services.merchant-svc.loadBalancer.servers]]
+                    url = "http://merchant-svc:3001"
+
+    [http.middlewares]
+        [http.middlewares.api-key.headers]
+            [http.middlewares.api-key.headers.customRequestHeaders]
+                X-Api-Key = "YAMdLbpm4vss9a3sAiSxXW2ttFxkhV7k"
+        [http.middlewares.midd-merchant-svc]
+            [http.middlewares.midd-merchant-svc.stripPrefix]
+                prefixes = ["/v1"]

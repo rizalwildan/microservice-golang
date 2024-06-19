@@ -1,0 +1,18 @@
+[http]
+    [http.routers]
+        [http.routers.user-svc]
+            entryPoints = ["http"]
+            rule = "Host(`localhost`) && PathPrefix(`/v1/users`)"
+            service = "user-svc"
+            middlewares = ["midd-user-svc"]
+
+    [http.services]
+        [http.services.user-svc]
+            [http.services.user-svc.loadBalancer]
+                [[http.services.user-svc.loadBalancer.servers]]
+                    url = "http://user-svc:3000"
+
+    [http.middlewares]
+        [http.middlewares.midd-user-svc]
+            [http.middlewares.midd-user-svc.stripPrefix]
+                prefixes = ["/v1/users"]
