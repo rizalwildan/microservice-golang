@@ -4,6 +4,8 @@
 
 ## Requirement
 * Go version 1.20
+* GoFiber
+* Traefik
 * Docker
 
 ## Architecture
@@ -23,7 +25,11 @@ $ docker compose up -d
 Change directory to each root projects
 
 ```bash
-$ cd user_svc
+$ cd {service_name}
+```
+
+```bash
+$ go mod tidy
 ```
 
 ```bash
@@ -39,3 +45,5 @@ http://localhost:8081/v1/users/docs
 http://localhost:8081/v1/products/docs
 http://localhost:8081/v1/merchants/docs
 ```
+
+or you can import postman collection inside `postman/` folder

@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "88ce7055-cddc-465f-bc6e-16638aef9dac",
+		"name": "Microservice Webinar",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "23680189",
+		"_collection_link": "https://gold-moon-3060.postman.co/workspace/Backend-Team~09f9f213-a9ce-46d9-a6a0-86bc29366c6f/collection/23680189-88ce7055-cddc-465f-bc6e-16638aef9dac?action=share&source=collection_link&creator=23680189"
+	},
+	"item": [
+		{
+			"name": "user_svc",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rizal\",\n    \"email\": \"rizal@foo.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/users/auth/signup"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rizal@foo.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/users/auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiZXhwIjoxNzE4MzczOTI5fQ.ZpsQMHSyHH-pIpWnDlCdEb798PjyxvzG7dQ5bNsrieo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/users/auth/me"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "merchant_svc",
+			"item": [
+				{
+					"name": "Create Merchant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Dogy Shop\",\n    \"description\": \"Jual pakan kucing\",\n    \"city\": \"Yogyakarta\",\n    \"user_id\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/merchants"
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Merchant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/merchants"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Merchant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/merchants/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Merchant Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/merchants/1/products"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product_svc",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Meow Kitten 1kg\",\n    \"description\": \"makanan anak kucing kekinian\",\n    \"quantity\": 10,\n    \"price\": 45000,\n    \"merchant_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Product",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "wS@oY^DfdCy$CnW7ATHy~9bbiPPctjmV",
+								"uuid": "f2cbdf0b-2f15-4271-ac06-5be55d8d1602"
+							}
+						],
+						"url": "{{host}}/products"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
