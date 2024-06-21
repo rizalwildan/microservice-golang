@@ -2,6 +2,8 @@
 
 > Notes: This microservice is not ready for production; it is intended solely for demonstration purposes.
 
+Slide: [Google Slide](https://docs.google.com/presentation/d/1AQniCBgoW7SPgcQOVffojbuBElu21Muvl0SmFDTTWTc/edit?usp=sharing)
+
 ## Requirement
 * Go version 1.20
 * GoFiber
